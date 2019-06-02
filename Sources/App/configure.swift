@@ -18,6 +18,8 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
     services.register(middlewares)
 
     // Configure a SQLite database
+        //docker run --name postgres -e POSTGRES_DB=vapor -e POSTGRES_USER=vapor -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
+    
     let hostname = Environment.get("DATABASE_HOSTNAME") ?? "localhost"
     let password = Environment.get("DATABASE_PASSWORD") ?? "password"
     let username = Environment.get("DATABASE_USERNAME") ?? "vapor"

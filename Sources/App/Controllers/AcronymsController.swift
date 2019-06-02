@@ -11,23 +11,23 @@ import Fluent
 
 struct AcronymController: RouteCollection {
     func boot(router: Router) throws {
-        router.get("api" , "acronyms", use: getAllHandler)
-        router.get("api" , "acronyms", Acronym.parameter, use: getById)
-        router.get("api", "acronyms", "search", use: search)
+        let acronymRoutes = router.grouped("api", "acronyms")
         
-        router.post("api", "acronyms", use: saveHandler)
-        router.put("api", "acronyms", use: update)
-        router.delete("api", "acronyms", use: delete)
+        acronymRoutes.get(use: getAllHandler)
+        acronymRoutes.get(Acronym.parameter, use: getById)
+        acronymRoutes.get("search", use: search)
+        
+        acronymRoutes.post(Acronym.self, use: saveHandler)
+        acronymRoutes.put(use: update)
+        acronymRoutes.delete(use: delete)
     }
     
     func getAllHandler(_ req: Request) -> Future<[Acronym]>{
         return Acronym.query(on: req).all()
     }
     
-    func saveHandler(req: Request) throws -> Future<Acronym>{
-        return try req.content.decode(Acronym.self).flatMap(to: Acronym.self, { (acronym) in
-            return acronym.save(on: req)
-        })
+    func saveHandler(req: Request, acronym: Acronym) throws -> Future<Acronym>{
+        return acronym.save(on: req)
     }
     
     func getById(req: Request) throws -> Future<Acronym> {
